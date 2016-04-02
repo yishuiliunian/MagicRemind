@@ -1,0 +1,12 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+target 'MagicRemind_Example', :exclusive => true do
+  pod 'MagicRemind', :path => '../'
+end
+
+target 'MagicRemind_Tests', :exclusive => true do
+  pod 'MagicRemind', :path => '../'
+
+  pod 'FBSnapshotTestCase'
+end
