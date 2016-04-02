@@ -1,0 +1,6 @@
+framework module MagicRemind {
+  umbrella header "MagicRemind-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,21 @@
+PODS:
+  - FBSnapshotTestCase (2.1.0):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.0)
+  - FBSnapshotTestCase/Core (2.1.0)
+  - FBSnapshotTestCase/SwiftSupport (2.1.0):
+    - FBSnapshotTestCase/Core
+  - MagicRemind (0.1.0)
+
+DEPENDENCIES:
+  - FBSnapshotTestCase
+  - MagicRemind (from `../`)
+
+EXTERNAL SOURCES:
+  MagicRemind:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  FBSnapshotTestCase: 366ecd378511d7716c79991cd8067d1eed23578d
+  MagicRemind: 4c5c7ac9f0607b2b4e6fe266620786ddeaf2cbf3
+
+COCOAPODS: 0.39.0
