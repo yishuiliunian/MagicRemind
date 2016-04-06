@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "5949D9FB410FB82F3A8420A2E1667C7E776225E2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "4FC341B6D20320319C7077FD81FE188C46915CF7" : 0,
+    "5949D9FB410FB82F3A8420A2E1667C7E776225E2" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E266C4A8-307F-4BC7-A295-63F6D8A10ADA",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "4FC341B6D20320319C7077FD81FE188C46915CF7" : "..",
+    "5949D9FB410FB82F3A8420A2E1667C7E776225E2" : "MagicRemind\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "MagicRemind",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Example\/MagicRemind.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/www.catchitime.com:8081\/diffusion\/KIOS\/k-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4FC341B6D20320319C7077FD81FE188C46915CF7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/yishuiliunian\/MagicRemind",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5949D9FB410FB82F3A8420A2E1667C7E776225E2"
+    }
+  ]
+}
