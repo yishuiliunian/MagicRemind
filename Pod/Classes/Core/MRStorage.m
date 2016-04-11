@@ -8,6 +8,7 @@
 
 #import "MRStorage.h"
 #import "MRItem.h"
+#import "MRLayoutTextItem.h"
 @interface MRStorage ()
 {
     NSMutableDictionary* _magicRemindCache;
@@ -38,18 +39,27 @@
 
 - (MRItem*) itemWithIdentifier:(NSString *)identifier
 {
-    MRItem* item = [MRItem new];
-    item.identifier = identifier;
-    item.show = YES;
-    item.layoutItems = @[];
-    return item;
+    return _magicRemindCache[identifier];
 }
 
 - (void) cacheItem:(MRItem*)item
 {
-    if (!item.identifier) {
+    if (item.identifier) {
         _magicRemindCache[item.identifier] = item;
+        [self archiveStorage];
     }
+}
+
+
+- (void) updateRemind:(NSString *)identifier text:(NSString *)text
+{
+    MRItem* item = [[MRItem alloc] init];
+    item.show = YES;
+    MRLayoutTextItem* textLayout= [MRLayoutTextItem new];
+    textLayout.text = text;
+    item.layoutItems = @[textLayout];
+    item.identifier = identifier;
+    [self cacheItem:item];
 }
 
 - (void) loadStorage
@@ -61,4 +71,6 @@
 {
     
 }
+
+
 @end

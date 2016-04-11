@@ -12,4 +12,8 @@
 @interface MRStorage : NSObject
 + (MRStorage*) shareStorage;
 - (MRItem*) itemWithIdentifier:(NSString*)identifier;
+- (void) updateRemindWithPoint:(NSString*)identifier;
+- (void) updateRemind:(NSString*)identifier number:(int)number;
+- (void) updateRemind:(NSString*)identifier text:(NSString*)text;
+
 @end

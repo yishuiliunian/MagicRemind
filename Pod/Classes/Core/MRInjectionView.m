@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 #import "MRContentView.h"
 #import "MRItem.h"
+#import "MRSimpleContentView.h"
 
 static void* kMRUIBridge = &kMRUIBridge;
 static void* kMRUIContentView = &kMRUIContentView;
@@ -45,18 +46,22 @@ static void* kMRUIContentView = &kMRUIContentView;
 
 
 
-- (MRContentView*) MR_contentView
+- (MRContentView*) MR_contentView:(Class)cla
 {
-    MRContentView* contentView = [self viewWithTag:self.MR_contentViewTag];
-    if (!contentView) {
-        contentView = [MRContentView new];
-    } else {
-        if (![contentView isKindOfClass:[MRContentView class]]) {
-            contentView = [MRContentView new];
-            self.MR_contentViewTag = self.MR_contentViewTag++;
+    
+    MRContentView* contentView;
+    for (UIView* view in self.subviews) {
+        if ([view isKindOfClass:[MRContentView class]]) {
+            if ([view isKindOfClass:cla]) {
+                contentView = view;
+            } else {
+                [view removeFromSuperview];
+            }
         }
     }
-    contentView.tag = self.MR_contentViewTag;
+    if (!contentView) {
+        contentView = [cla new];
+    }
     [self addSubview:contentView];
     [self bringSubviewToFront:contentView];
     return contentView;
@@ -74,15 +79,18 @@ static void* kMRUIContentView = &kMRUIContentView;
         return;
     }
     
-    if (!item.show) {
+    if (!item.show && item.layoutItems.count == 0) {
         UIView* view = [self viewWithTag:self.MR_contentViewTag];
         if ([view isKindOfClass:[MRContentView class]]) {
             view.hidden = YES;
         }
     } else {
-        MRContentView* contentView = [self MR_contentView];
-        contentView.frame = self.bounds;
-        contentView.backgroundColor = [UIColor redColor];
+        if (item.layoutItems.count == 1) {
+            MRContentView* contentView = [self MR_contentView:[MRSimpleContentView class]];
+            contentView.frame = self.bounds;
+            contentView.backgroundColor = [UIColor redColor];
+            [contentView layoutMRItem:item];
+        }
     }
 }
 
