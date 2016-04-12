@@ -33,13 +33,15 @@ NSString* const kMRLayoutItemType = @"type";
 - (id) valueForKey:(NSString *)key
 {
     if ([kMRLayoutItemType isEqualToString:key]) {
-        if (self isKindOfClass:[kMRLayoutSpringType ]) {
-            <#statements#>
+        if ([self isKindOfClass:[MRLayoutTextItem class]]) {
+            return kMRLayoutTextType;
+        } else if ([self isKindOfClass:[MRLayoutSpringItem class]]) {
+            return kMRLayoutSpringType;
         }
-
     }
-
+    return [NSNull null];
 }
+
 
 - (CGSize) size
 {
