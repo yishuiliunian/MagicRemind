@@ -9,7 +9,7 @@
 #import "MRRemind.h"
 #import "MRExtendClass.h"
 #import "MRInjectionView.h"
-BOOL MRExtendViewRemindLogic(UIView* view, NSString* identifier)
+id  MRExtendViewRemindLogic(UIView* view, NSString* identifier)
 {
     
     void(^BuildBridge)(void) = ^(void) {
@@ -28,5 +28,36 @@ BOOL MRExtendViewRemindLogic(UIView* view, NSString* identifier)
         MRExtendInstanceLogic(view, @[[MRInjectionView class]]);
         BuildBridge();
     }
+    return view;
 }
+
+
+void MRExtendTabarItemRemindLogic(UITabBarItem* item , NSString* identifier) {
+    UIView* tabView = [item valueForKey:@"_view"];
+    UIView* aimView = nil;
+    for (UIView* subView in tabView.subviews) {
+        if ([subView isKindOfClass:NSClassFromString(@"UITabBarSwappableImageView")]) {
+            aimView = subView;
+        }
+    }
+    if (aimView) {
+        MRExtendViewRemindLogic(aimView, identifier);
+        if ([aimView respondsToSelector:@selector(xBadgeMargin)] && [aimView respondsToSelector:@selector(yBadgeMargin)]) {
+            MRInjectionView* injectionView = (MRInjectionView*)aimView;
+            injectionView.xBadgeMargin = 0.5;
+        }
+    }
+}
+
+MRInjectionView*  MRExternNavigationBarItemRemindLogic(UIBarButtonItem* item, NSString* identifier) {
+    UIView* tabView = [item valueForKey:@"_view"];
+    if (tabView) {
+        MRExtendViewRemindLogic(tabView, identifier);
+    }
+    if ([tabView respondsToSelector:@selector(magicRemindBridge)]) {
+        return tabView;
+    }
+    return nil;
+}
+
 

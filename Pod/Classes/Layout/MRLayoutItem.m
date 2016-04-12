@@ -25,6 +25,22 @@ NSString* const kMRLayoutItemType = @"type";
     return item;
 }
 
+- (NSDictionary*) toDictionary
+{
+    return [self dictionaryWithValuesForKeys:@[kMRLayoutItemType, kMRLayoutSpringType]];
+}
+
+- (id) valueForKey:(NSString *)key
+{
+    if ([kMRLayoutItemType isEqualToString:key]) {
+        if (self isKindOfClass:[kMRLayoutSpringType ]) {
+            <#statements#>
+        }
+
+    }
+
+}
+
 - (CGSize) size
 {
     return CGSizeZero;

@@ -8,6 +8,7 @@
 
 #import "MRUIBridge.h"
 #import "MRStorage.h"
+#import "MRItem.h"
 @implementation MRUIBridge
 - (instancetype) initWithIdentifier:(NSString *)identifier
 {
@@ -24,5 +25,11 @@
     return [[MRStorage shareStorage] itemWithIdentifier:self.identifier];
 }
 
+- (void) hidden
+{
+    MRItem* item = [self magicRemindItem];
+    [self.layoutView setNeedsLayout];
+
+}
 
 @end

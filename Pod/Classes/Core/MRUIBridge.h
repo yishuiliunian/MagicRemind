@@ -14,4 +14,5 @@
 @property (nonatomic, weak) UIView* layoutView;
 - (instancetype) initWithIdentifier:(NSString*)identifier;
 - (MRItem*) magicRemindItem;
+- (void) hidden;
 @end

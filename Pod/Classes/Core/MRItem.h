@@ -8,10 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MRItem : NSObject
-@property (nonatomic, assign, readonly) BOOL neeedUpdate;
+@interface MRItem : NSObject <NSCoding>
+@property (nonatomic, assign) BOOL neeedUpdate;
 @property (nonatomic, strong) NSString* identifier;
-@property (nonatomic, assign) BOOL show;
+@property (nonatomic, assign, readonly) BOOL show;
 @property (nonatomic, strong) NSArray* layoutItems;
-- (void) setNeeedUpdate:(BOOL)neeedUpdate;
 @end

@@ -10,9 +10,9 @@
 #import "MRLayoutItem.h"
 #import "MRItem.h"
 #import "MRLayoutTextItem.h"
-#import "CustomBadge.h"
+#import "DZBadgeView.h"
 @interface MRSimpleContentView ()
-@property (nonatomic, strong) CustomBadge* badgeView;
+@property (nonatomic, strong) DZBadgeView* badgeView;
 @property (nonatomic, strong) MRItem* item;
 @end
 
@@ -23,7 +23,7 @@
     if (!self) {
         return self;
     }
-    _badgeView = [CustomBadge customBadgeWithString:@"0"];
+    _badgeView = [[DZBadgeView alloc] init];
     [self addSubview:_badgeView];
     return self;
 
@@ -40,9 +40,8 @@
     MRLayoutItem* layoutItem = _item.layoutItems.lastObject;
     if ([layoutItem isKindOfClass:[MRLayoutTextItem class]]) {
         MRLayoutTextItem* textItem = (MRLayoutTextItem*)layoutItem;
-        _badgeView.badgeText = textItem.text;
-        _badgeView.frame = CGRectMake(100, 140, 40, 40);
-        [_badgeView autoBadgeSizeWithString:textItem.text];
+        _badgeView.frame = self.bounds;
+        _badgeView.text= textItem.text;
     }
 
 }

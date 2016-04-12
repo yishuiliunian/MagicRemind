@@ -8,4 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-FOUNDATION_EXTERN BOOL MRExtendViewRemindLogic(UIView* view, NSString* identifier);
+@class MRInjectionView;
+FOUNDATION_EXTERN id MRExtendViewRemindLogic(UIView* view, NSString* identifier);
+FOUNDATION_EXTERN void MRExtendTabarItemRemindLogic(UITabBarItem* item , NSString* identifier);
+FOUNDATION_EXTERN MRInjectionView* MRExternNavigationBarItemRemindLogic(UIBarButtonItem* item, NSString* identifier);

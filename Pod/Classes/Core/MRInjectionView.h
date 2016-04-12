@@ -10,4 +10,8 @@
 #import "MRUIBridge.h"
 @interface MRInjectionView : UIView
 @property (nonatomic, strong) MRUIBridge* magicRemindBridge;
+@property (nonatomic, assign) CGFloat xBadgeMargin;
+@property (nonatomic, assign) CGFloat yBadgeMargin;
+
+- (void) enableTapClearRemind;
 @end

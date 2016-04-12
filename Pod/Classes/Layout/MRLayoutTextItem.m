@@ -63,10 +63,7 @@ static NSString* kTextItemCornerRatio = @"corner";
 
 - (id) valueForKey:(NSString *)key
 {
-    id value = [super valueForKey:key];
-    if (value && ![value isKindOfClass:[NSNull class]]) {
-        return value;
-    }
+
     if ([kTextItemText isEqualToString:key]) {
         return _text;
     } else if ([key isEqualToString:kTextItemTextColor])
@@ -80,6 +77,11 @@ static NSString* kTextItemCornerRatio = @"corner";
     } else if ([key isEqualToString:kTextItemCornerRatio])
     {
         return @(_cornerRediusRatio);
+    }
+    
+    id value = [super valueForKey:key];
+    if (value && ![value isKindOfClass:[NSNull class]]) {
+        return value;
     }
     return [NSNull null];
 }

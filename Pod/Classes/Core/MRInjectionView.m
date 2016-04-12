@@ -14,11 +14,24 @@
 
 static void* kMRUIBridge = &kMRUIBridge;
 static void* kMRUIContentView = &kMRUIContentView;
+static void* kMRXbadgeMargin  = &kMRXbadgeMargin;
+static void* kMRYBadgeMargin = &kMRYBadgeMargin;
+static void* kMRTapGesture = &kMRTapGesture;
 @interface MRInjectionView ()
-@property (nonatomic, assign) int MR_contentViewTag;
+@property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
 @end
 
 @implementation MRInjectionView
+
+- (void) setTapGesture:(UITapGestureRecognizer *)tapGesture
+{
+    objc_setAssociatedObject(self, kMRTapGesture, tapGesture, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UITapGestureRecognizer*) tapGesture
+{
+    return objc_getAssociatedObject(self, kMRTapGesture);
+}
 
 - (void) setMagicRemindBridge:(MRUIBridge *)magicRemindBridge
 {
@@ -42,6 +55,25 @@ static void* kMRUIContentView = &kMRUIContentView;
 - (void) setMR_contentViewTag:(int)MR_contentViewTag
 {
     objc_setAssociatedObject(self, kMRUIContentView, @(MR_contentViewTag), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+- (CGFloat) xBadgeMargin
+{
+    return [objc_getAssociatedObject(self, kMRXbadgeMargin) floatValue];
+}
+
+- (void) setXBadgeMargin:(CGFloat)xBadgeMargin
+{
+    objc_setAssociatedObject(self, kMRXbadgeMargin, @(xBadgeMargin), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (CGFloat) yBadgeMargin
+{
+    return [objc_getAssociatedObject(self, kMRYBadgeMargin) floatValue];
+}
+
+- (void) setYBadgeMargin:(CGFloat)xBadgeMargin
+{
+    objc_setAssociatedObject(self, kMRYBadgeMargin, @(xBadgeMargin), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 
@@ -67,6 +99,29 @@ static void* kMRUIContentView = &kMRUIContentView;
     return contentView;
 }
 
+- (void) __handleMagicRemindTap:(UITapGestureRecognizer*)tap
+{
+    if (tap.state == UIGestureRecognizerStateRecognized) {
+        MRUIBridge* bridge= self.magicRemindBridge;
+        if (bridge) {
+            [bridge hidden];
+        }
+    }
+
+}
+
+- (void) enableTapClearRemind
+{
+    if (!self.tapGesture) {
+        UITapGestureRecognizer* tapGestur = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(__handleMagicRemindTap:)];
+        tapGestur.numberOfTapsRequired = 1;
+        tapGestur.numberOfTouchesRequired = 1;
+        [self addGestureRecognizer:tapGestur];
+        self.userInteractionEnabled = YES;
+        self.tapGesture = tapGestur;
+    }
+}
+
 - (void) layoutSubviews
 {
     [super layoutSubviews];
@@ -79,16 +134,19 @@ static void* kMRUIContentView = &kMRUIContentView;
         return;
     }
     
-    if (!item.show && item.layoutItems.count == 0) {
-        UIView* view = [self viewWithTag:self.MR_contentViewTag];
-        if ([view isKindOfClass:[MRContentView class]]) {
-            view.hidden = YES;
+    if (!item.show ||  item.layoutItems.count == 0) {
+        for (UIView* view  in self.subviews) {
+            if ([view isKindOfClass:[MRContentView class]]) {
+                [view removeFromSuperview];
+            }
         }
     } else {
         if (item.layoutItems.count == 1) {
             MRContentView* contentView = [self MR_contentView:[MRSimpleContentView class]];
-            contentView.frame = self.bounds;
-            contentView.backgroundColor = [UIColor redColor];
+            CGRect rect = self.bounds;
+            rect.origin.x = self.xBadgeMargin * self.bounds.size.width;
+            rect.origin.y = self.yBadgeMargin * self.bounds.size.height;
+            contentView.frame = rect;
             [contentView layoutMRItem:item];
         }
     }

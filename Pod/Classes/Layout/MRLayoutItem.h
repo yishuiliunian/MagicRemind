@@ -19,4 +19,10 @@ extern NSString* const kMRLayoutItemType;
  *  提前计算当前Item展示的大小之类的东西
  */
 - (void) prelayout;
+/**
+ *  serilized
+ *
+ *  @return dic
+ */
+- (NSDictionary*) toDictionary;
 @end
