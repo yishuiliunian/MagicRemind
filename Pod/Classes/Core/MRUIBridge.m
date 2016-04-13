@@ -27,9 +27,8 @@
 
 - (void) hidden
 {
-    MRItem* item = [self magicRemindItem];
+    [[MRStorage shareStorage] hiddenRemind:self.identifier];
     [self.layoutView setNeedsLayout];
-
 }
 
 @end
