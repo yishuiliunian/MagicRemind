@@ -88,7 +88,10 @@ static NSString* kTextItemCornerRatio = @"corner";
 
 - (NSDictionary*) toDictionary
 {
-    return [self dictionaryWithValuesForKeys:@[kTextItemCornerRatio, kTextItemBackgroundColor, kTextItemTextColor, kTextItemFontSize, kTextItemText]];
+    NSMutableDictionary* infos = [[super toDictionary] copy];
+    NSDictionary* myInfos = [self dictionaryWithValuesForKeys:@[kTextItemCornerRatio, kTextItemBackgroundColor, kTextItemTextColor, kTextItemFontSize, kTextItemText]];
+    [infos addEntriesFromDictionary:myInfos];
+    return infos;
 }
 
 @end

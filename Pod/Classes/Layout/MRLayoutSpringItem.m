@@ -12,4 +12,11 @@ NSString* const kMRLayoutSpringType = @"spring";
 
 @implementation MRLayoutSpringItem
 
+- (NSDictionary*) toDictionary
+{
+    NSMutableDictionary* infos = [[super toDictionary] copy];
+    NSDictionary* myInfos = @{};
+    [infos addEntriesFromDictionary:myInfos];
+    return infos;
+}
 @end
