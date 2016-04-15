@@ -96,7 +96,7 @@ stonedong, yishuiliunian@gmail.com
 
 我们举个例子，加入一个UI元素的instance目前是UIView类。如上图所示在未处理之前，instance的isa指针指向一个UIView。但是经过处理之后instance的isa指针指向了，我们在运行时创建的类UIView_exteandlass。该类继承在原始的类UIView，这是为了保证该instance原有的业务逻辑不受影响。通过继承我们全量保留了原有类中的业务逻辑。
 
-同时我们通过method_swizzing技术奖类DZLogic1和红点业务逻辑的类，注入到了新生成的类UIView_extandlas中。
+同时我们通过method_swizzing技术奖类DZLogic1和红点业务逻辑的类，注入到了新生成的类UIView_extandlas中。啊
 
 并且将instance的isa指针修改到我们心生成的类。这样instance就有了红点的功能。简单封装一下我们就能提供接口，让调用者来使用注入红点逻辑的功能；
 

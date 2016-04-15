@@ -44,7 +44,7 @@ static NSString* kTextItemCornerRatio = @"corner";
 
 - (void) setValue:(id)value forKey:(NSString *)key
 {
-    [super setValue:value forKey:key];
+
     if ([kTextItemText isEqualToString:key]) {
         _text = value;
     } else if ([key isEqualToString:kTextItemTextColor])
@@ -58,6 +58,8 @@ static NSString* kTextItemCornerRatio = @"corner";
     } else if ([key isEqualToString:kTextItemCornerRatio])
     {
         _cornerRediusRatio = [value floatValue];
+    } else {
+        [super setValue:value forKey:key];
     }
 }
 
@@ -88,7 +90,7 @@ static NSString* kTextItemCornerRatio = @"corner";
 
 - (NSDictionary*) toDictionary
 {
-    NSMutableDictionary* infos = [[super toDictionary] copy];
+    NSMutableDictionary* infos = [[super toDictionary] mutableCopy];
     NSDictionary* myInfos = [self dictionaryWithValuesForKeys:@[kTextItemCornerRatio, kTextItemBackgroundColor, kTextItemTextColor, kTextItemFontSize, kTextItemText]];
     [infos addEntriesFromDictionary:myInfos];
     return infos;

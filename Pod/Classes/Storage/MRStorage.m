@@ -85,6 +85,10 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 - (void) loadStorage
 {
     NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:kMagicRemindKey];
+    if (!data) {
+        return;
+    }
+
     NSDictionary* cache = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     [_magicRemindCache addEntriesFromDictionary:cache];
 }

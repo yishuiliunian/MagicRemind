@@ -7,7 +7,6 @@
 //
 
 #import "MRItem.h"
-#import <YYModel.h>
 #import "MRItem_Private.h"
 #import "MRLayoutItem.h"
 static NSString* kMRItemIdentifier = @"I";

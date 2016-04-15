@@ -11,4 +11,5 @@
 #import "MRRemind.h"
 #import "MRStorage.h"
 #import "MRInjectionView.h"
+#import "MRDependencyReleation.h"
 #endif /* MagicRemind_h */

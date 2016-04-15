@@ -25,9 +25,19 @@ NSString* const kMRLayoutItemType = @"type";
     return item;
 }
 
+- (void) setValue:(id)value forKey:(NSString *)key
+{
+    if ([key isEqualToString:kMRLayoutItemType]) {
+        
+    } else {
+        [super setValue:value forKey:key];
+    }
+
+}
+
 - (NSDictionary*) toDictionary
 {
-    return [self dictionaryWithValuesForKeys:@[kMRLayoutItemType, kMRLayoutSpringType]];
+    return [self dictionaryWithValuesForKeys:@[kMRLayoutItemType]];
 }
 
 - (id) valueForKey:(NSString *)key
