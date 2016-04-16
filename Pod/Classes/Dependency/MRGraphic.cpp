@@ -37,7 +37,7 @@ void MagicRecord::MRGraphic::insertNode(const char * identifier) {
     if (this->isNodeExist(identifier)) {
         return;
     }
-    this->nodes.push_back(new MRNode(identifier));
+    this->nodes.push_back(*new MRNode(identifier));
 }
 
 bool MagicRecord::MRGraphic::isNodeExist(const char * identifier) {
