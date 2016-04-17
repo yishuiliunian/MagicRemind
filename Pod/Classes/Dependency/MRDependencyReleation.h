@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface MRDependencyReleation : NSObject
++ (MRDependencyReleation*) shareManager;
 - (instancetype) initWithMap:(NSDictionary*)ship;
 - (void) addDependency:(NSString*)father child:(NSString*)child;
 @end

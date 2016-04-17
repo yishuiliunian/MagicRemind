@@ -9,6 +9,7 @@
 #import "MRUIBridge.h"
 #import "MRStorage.h"
 #import "MRItem.h"
+#import "MRNotification.h"
 @implementation MRUIBridge
 - (instancetype) initWithIdentifier:(NSString *)identifier
 {
@@ -17,7 +18,13 @@
         return self;
     }
     _identifier = identifier;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stateChanged:) name:MRNotificationKey(_identifier) object:nil];
     return self;
+}
+
+- (void) stateChanged:(NSNotification*)nc
+{
+    [self.layoutView setNeedsLayout];
 }
 
 - (MRItem*) magicRemindItem

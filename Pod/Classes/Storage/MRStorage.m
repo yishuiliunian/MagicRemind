@@ -10,10 +10,13 @@
 #import "MRItem.h"
 #import "MRLayoutTextItem.h"
 #import "MRItem_Private.h"
+#import "MRDependencyReleation.h"
+#import "MRNotification.h"
 static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 @interface MRStorage ()
 {
     NSMutableDictionary* _magicRemindCache;
+    NSMutableArray* _allListener;
 }
 @end
 
@@ -36,6 +39,8 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
         return self;
     }
     _magicRemindCache = [NSMutableDictionary new];
+    _allListener = [NSMutableArray new];
+    [self registerChangeListender:[MRDependencyReleation shareManager]];
     [self loadStorage];
     NSNotificationCenter* ncenter = [NSNotificationCenter defaultCenter];
     [ncenter addObserver:self selector:@selector(archiveStorage) name:
@@ -79,7 +84,13 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 {
     MRItem* item  = [self itemWithIdentifier:identifier];
     item.show = NO;
-    
+    for (id<MRStatesProtocol> l in _allListener) {
+        if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
+            [l storage:self willChangeItem:item showState:NO];
+        }
+    }
+    //
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
 }
 
 - (void) loadStorage
@@ -101,5 +112,8 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-
+- (void) registerChangeListender:(id<MRStatesProtocol>)listener
+{
+    [_allListener addObject:listener];
+}
 @end
