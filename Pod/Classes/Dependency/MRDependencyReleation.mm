@@ -42,6 +42,12 @@
     [_graphic insertArcWithHeader:father tailer:child];
 }
 
+- (BOOL) isExistCircleDependency
+{
+    BOOL exist =  [_graphic isExistCircleDependency];
+    NSAssert(!exist, @"it exist circle dependency please remove it");
+    return exist;
+}
 
 
 - (void) storage:(MRStorage *)storage willChangeItem:(MRItem *)item showState:(BOOL)aimState
