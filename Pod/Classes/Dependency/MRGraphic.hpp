@@ -40,7 +40,7 @@ namespace MagicRecord {
     
     class MRGraphic {
     private:
-        std::vector<MRNode*> nodes;
+        std::vector<MRNode> nodes;
         std::vector<MRArc> arcs;
     public:
         MRGraphic();

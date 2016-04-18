@@ -22,7 +22,7 @@ const char* MagicRecord::MRNode::identifier()
 MagicRecord::MRNode::~MRNode()
 {
     if (this->identy != NULL) {
-        free(this->identy);
+//        free(this->identy);
     }
 
     this->identy == NULL;
@@ -37,16 +37,16 @@ void MagicRecord::MRGraphic::insertNode(const char * identifier) {
     if (this->isNodeExist(identifier)) {
         return;
     }
-    this->nodes.push_back(new MRNode(identifier));
+    this->nodes.push_back(MRNode(identifier));
 }
 
 bool MagicRecord::MRGraphic::isNodeExist(const char * identifier) {
-    std::vector<MRNode>::iterator iterator ;
-    for (iterator = nodes.begin(); iterator != nodes.end(); iterator++) {
-        if (strcmp(identifier,iterator->identifier()) == 0) {
-            return true;
-        }
-    }
+//    std::vector<MRNode>::iterator iterator ;
+//    for (iterator = nodes.begin(); iterator != nodes.end(); iterator++) {
+//        if (strcmp(identifier,iterator->identifier()) == 0) {
+//            return true;
+//        }
+//    }
     return false;
 }
 
