@@ -52,20 +52,25 @@
 
 - (void) storage:(MRStorage *)storage willChangeItem:(MRItem *)item showState:(BOOL)aimState
 {
-    NSArray* nodes =[_graphic allLinkInterNodes:item.identifier];
-    for (MRGNode* node in nodes) {
-        NSArray* allDenp = [_graphic allLinkOuterNodes:node.identifier];
-        BOOL show = NO;
-        for (MRGNode* childNode in allDenp) {
-            MRItem* item = [storage itemWithIdentifier:childNode.identifier];
-            if (item) {
-                show != item.show;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSArray* nodes =[_graphic allLinkInterNodes:item.identifier];
+        for (MRGNode* node in nodes) {
+            NSArray* allDenp = [_graphic allLinkOuterNodes:node.identifier];
+            BOOL show = YES;
+            for (MRGNode* childNode in allDenp) {
+                MRItem* item = [storage itemWithIdentifier:childNode.identifier];
+                if (item) {
+                    show = show && item.show;
+                }
+            }
+            MRItem* superItem = [storage itemWithIdentifier:node.identifier];
+            if (!show) {
+                [storage hiddenRemind:node.identifier];
+            } else {
+                [storage updateRemind:node.identifier text:@"2"];
             }
         }
-        MRItem* superItem = [storage itemWithIdentifier:node.identifier];
-        if (!show) {
-            [storage hiddenRemind:superItem.identifier];
-        }
-    }
+    });
+
 }
 @end

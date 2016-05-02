@@ -24,7 +24,9 @@
 
 - (void) stateChanged:(NSNotification*)nc
 {
-    [self.layoutView setNeedsLayout];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.layoutView setNeedsLayout];
+    });
 }
 
 - (MRItem*) magicRemindItem

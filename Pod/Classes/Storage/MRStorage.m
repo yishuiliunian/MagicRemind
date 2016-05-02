@@ -68,16 +68,33 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     }
 }
 
+- (void) updateRemind:(NSString *)identifier number:(int)number
+{
+    [self updateRemind:identifier text:[@(number) stringValue]];
+}
+
 
 - (void) updateRemind:(NSString *)identifier text:(NSString *)text
 {
-    MRItem* item = [[MRItem alloc] init];
+    MRItem* item = [self itemWithIdentifier:identifier];
+    if (!item) {
+        item = [[MRItem alloc] init];
+    }
+
     item.show = YES;
     MRLayoutTextItem* textLayout= [MRLayoutTextItem new];
     textLayout.text = text;
     item.layoutItems = @[textLayout];
     item.identifier = identifier;
     [self cacheItem:item];
+    
+    for (id<MRStatesProtocol> l in _allListener) {
+        if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
+            [l storage:self willChangeItem:item showState:NO];
+        }
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
 }
 
 - (void) hiddenRemind:(NSString *)identifier
