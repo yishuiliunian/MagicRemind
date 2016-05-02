@@ -44,7 +44,7 @@
 
 - (BOOL) isExistCircleDependency
 {
-    BOOL exist =  [_graphic isExistCircleDependency];
+    BOOL exist =  [_graphic checkCircle];
     NSAssert(!exist, @"it exist circle dependency please remove it");
     return exist;
 }
