@@ -31,6 +31,7 @@
 - (void) layoutMRItem:(MRItem *)item
 {
     _item = item;
+    [self setNeedsLayout];
 }
 
 - (void) layoutSubviews
