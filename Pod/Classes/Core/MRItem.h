@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface MRItem : NSObject <NSCoding>
+@interface MRItem : NSObject <NSCoding, NSCopying>
 @property (nonatomic, assign) BOOL neeedUpdate;
 @property (nonatomic, strong) NSString* identifier;
 @property (nonatomic, assign, readonly) BOOL show;
 @property (nonatomic, strong) NSArray* layoutItems;
+- (MRItem*) joinWithItem:(MRItem*)item;
 @end

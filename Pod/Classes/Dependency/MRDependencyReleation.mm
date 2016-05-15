@@ -56,18 +56,16 @@
         NSArray* nodes =[_graphic allLinkInterNodes:item.identifier];
         for (MRGNode* node in nodes) {
             NSArray* allDenp = [_graphic allLinkOuterNodes:node.identifier];
-            BOOL show = YES;
+            MRItem* item = nil;
             for (MRGNode* childNode in allDenp) {
-                MRItem* item = [storage itemWithIdentifier:childNode.identifier];
-                if (item) {
-                    show = show && item.show;
-                }
+                MRItem* joinedItem = [storage itemWithIdentifier:childNode.identifier];
+                item = [joinedItem joinWithItem:item];
             }
-            MRItem* superItem = [storage itemWithIdentifier:node.identifier];
-            if (!show) {
-                [storage hiddenRemind:node.identifier];
+            item.identifier = node.identifier;
+            if (item) {
+                [[MRStorage shareStorage] updateItem:item];
             } else {
-                [storage updateRemind:node.identifier text:@"2"];
+                [[MRStorage shareStorage] hiddenRemind:node.identifier];
             }
         }
     });

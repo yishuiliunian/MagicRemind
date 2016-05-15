@@ -12,6 +12,7 @@
 #import "MRItem_Private.h"
 #import "MRDependencyReleation.h"
 #import "MRNotification.h"
+#import "MRLayoutNumberItem.h"
 static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 @interface MRStorage ()
 {
@@ -68,9 +69,37 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     }
 }
 
+- (void) updateItem:(MRItem*)item
+{
+    if (!item) {
+        return;
+    }
+    [self cacheItem:item];
+    for (id<MRStatesProtocol> l in _allListener) {
+        if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
+            [l storage:self willChangeItem:item showState:NO];
+        }
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
+}
+
 - (void) updateRemind:(NSString *)identifier number:(int)number
 {
-    [self updateRemind:identifier text:[@(number) stringValue]];
+    MRItem* item = [self itemWithIdentifier:identifier];
+    if (!item) {
+        item = [[MRItem alloc] init];
+    }
+    MRLayoutNumberItem* numberLayout= [MRLayoutNumberItem new];
+    numberLayout.number= number;
+    item.layoutItems = @[numberLayout];
+    item.identifier = identifier;
+    if (number > 0) {
+        item.show = YES;
+    } else {
+        item.show = NO;
+    }
+    [self updateItem:item];
 }
 
 
@@ -86,15 +115,8 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     textLayout.text = text;
     item.layoutItems = @[textLayout];
     item.identifier = identifier;
-    [self cacheItem:item];
-    
-    for (id<MRStatesProtocol> l in _allListener) {
-        if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
-            [l storage:self willChangeItem:item showState:NO];
-        }
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
+    [self updateItem:item];
+
 }
 
 - (void) hiddenRemind:(NSString *)identifier

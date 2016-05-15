@@ -81,6 +81,12 @@
     MRGNode* hNode =[self insertNode:hi];
     MRGNode* tNode =[self insertNode:ti];
     
+    for (MRGArc* arc = hNode.firstOut; arc; arc = arc.outNextLink) {
+        if ([arc.tailer isEqual:tNode]) {
+            return arc;
+        }
+    }
+    
     MRGArc* arc = [MRGArc new];
     arc.header = hNode;
     arc.tailer = tNode;

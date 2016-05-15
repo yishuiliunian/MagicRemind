@@ -21,6 +21,7 @@
 - (void) updateRemind:(NSString*)identifier number:(int)number;
 - (void) updateRemind:(NSString*)identifier text:(NSString*)text;
 - (void) hiddenRemind:(NSString*)identifier;
+- (void) updateItem:(MRItem*)item;
 
 - (void) registerChangeListender:(id<MRStatesProtocol>)listener;
 @end

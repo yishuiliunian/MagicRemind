@@ -9,17 +9,18 @@
 #import "MRLayoutItem.h"
 #import "MRLayoutTextItem.h"
 #import "MRLayoutSpringItem.h"
+#import "MRLayoutNumberItem.h"
+#import <objc/runtime.h>
 NSString* const kMRLayoutItemType = @"type";
 
 @implementation MRLayoutItem
 + (MRLayoutItem*) layoutItemWithInfos:(NSDictionary *)infos
 {
     NSString* type = infos[kMRLayoutItemType];
+    Class class = NSClassFromString(type);
     MRLayoutItem* item = nil;
-    if ([type isEqualToString:kMRLayoutTextType]) {
-        item = [MRLayoutTextItem new];
-    } else if ([type isEqualToString:kMRLayoutSpringType]) {
-        item = [MRLayoutSpringItem new];
+    if ([class isSubclassOfClass:[MRLayoutItem class]]) {
+       item = [class new];
     }
     [item setValuesForKeysWithDictionary:infos];
     return item;
@@ -43,11 +44,7 @@ NSString* const kMRLayoutItemType = @"type";
 - (id) valueForKey:(NSString *)key
 {
     if ([kMRLayoutItemType isEqualToString:key]) {
-        if ([self isKindOfClass:[MRLayoutTextItem class]]) {
-            return kMRLayoutTextType;
-        } else if ([self isKindOfClass:[MRLayoutSpringItem class]]) {
-            return kMRLayoutSpringType;
-        }
+        return NSStringFromClass([self class]);
     }
     return [NSNull null];
 }

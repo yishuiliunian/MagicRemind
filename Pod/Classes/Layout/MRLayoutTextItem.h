@@ -11,6 +11,10 @@
 extern NSString* const kMRLayoutTextType;
 
 @interface MRLayoutTextItem : MRLayoutItem
+{
+    @protected
+    NSString* _text;
+}
 /**
  *  用来展示的文字信息
  */
