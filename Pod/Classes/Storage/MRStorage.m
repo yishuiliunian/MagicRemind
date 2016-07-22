@@ -119,6 +119,20 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 }
 
+- (void) updateRemindWithPoint:(NSString *)identifier
+{
+    MRItem* item = [self itemWithIdentifier:identifier];
+    if (!item) {
+        item = [[MRItem alloc] init];
+    }
+    
+    item.show = YES;
+    MRLayoutTextItem* textLayout= [MRLayoutTextItem new];
+    textLayout.text = @"";
+    item.layoutItems = @[textLayout];
+    item.identifier = identifier;
+    [self updateItem:item];
+}
 - (void) hiddenRemind:(NSString *)identifier
 {
     MRItem* item  = [self itemWithIdentifier:identifier];
