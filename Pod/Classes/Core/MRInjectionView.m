@@ -17,6 +17,7 @@ static void* kMRUIContentView = &kMRUIContentView;
 static void* kMRXbadgeMargin  = &kMRXbadgeMargin;
 static void* kMRYBadgeMargin = &kMRYBadgeMargin;
 static void* kMRTapGesture = &kMRTapGesture;
+static void* kMRHoritical = &kMRHoritical;
 @interface MRInjectionView ()
 @property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
 @end
@@ -28,9 +29,20 @@ static void* kMRTapGesture = &kMRTapGesture;
     objc_setAssociatedObject(self, kMRTapGesture, tapGesture, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+
 - (UITapGestureRecognizer*) tapGesture
 {
     return objc_getAssociatedObject(self, kMRTapGesture);
+}
+
+- (void) setHorizontalCenter:(BOOL)horizontalCenter
+{
+    objc_setAssociatedObject(self, kMRHoritical, @(horizontalCenter), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL) horizontalCenter
+{
+    return  [objc_getAssociatedObject(self, kMRHoritical) boolValue];
 }
 
 - (void) setMagicRemindBridge:(MRUIBridge *)magicRemindBridge
@@ -147,6 +159,7 @@ static void* kMRTapGesture = &kMRTapGesture;
             rect.origin.x = self.xBadgeMargin * self.bounds.size.width;
             rect.origin.y = self.yBadgeMargin * self.bounds.size.height;
             contentView.frame = rect;
+            contentView.horiticalCenter = self.horizontalCenter;
             [contentView layoutMRItem:item];
         }
     }

@@ -42,6 +42,7 @@
     if ([layoutItem isKindOfClass:[MRLayoutTextItem class]]) {
         MRLayoutTextItem* textItem = (MRLayoutTextItem*)layoutItem;
         _badgeView.frame = self.bounds;
+        _badgeView.horiticalCenter = self.horiticalCenter;
         _badgeView.text= textItem.text;
     }
 

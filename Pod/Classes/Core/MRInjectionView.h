@@ -12,6 +12,7 @@
 @property (nonatomic, strong) MRUIBridge* magicRemindBridge;
 @property (nonatomic, assign) CGFloat xBadgeMargin;
 @property (nonatomic, assign) CGFloat yBadgeMargin;
+@property (nonatomic, assign) BOOL horizontalCenter;
 
 - (void) enableTapClearRemind;
 @end

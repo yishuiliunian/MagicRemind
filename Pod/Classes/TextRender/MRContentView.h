@@ -10,7 +10,7 @@
 
 @class MRItem;
 @interface MRContentView : UIView
-
+@property (nonatomic, assign) BOOL horiticalCenter;
 - (void) layoutMRItem:(MRItem*)item;
 
 @end

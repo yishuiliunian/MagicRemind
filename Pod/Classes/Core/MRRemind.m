@@ -9,7 +9,7 @@
 #import "MRRemind.h"
 #import "MRExtendClass.h"
 #import "MRInjectionView.h"
-id  MRExtendViewRemindLogic(UIView* view, NSString* identifier)
+MRInjectionView*  MRExtendViewRemindLogic(UIView* view, NSString* identifier)
 {
     
     void(^BuildBridge)(void) = ^(void) {

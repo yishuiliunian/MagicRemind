@@ -21,6 +21,7 @@
 @end
 @implementation MRContentView
 
+@synthesize horiticalCenter = _horiticalCenter;
 
 - (instancetype) initWithFrame:(CGRect)frame
 {
@@ -28,7 +29,7 @@
     if (!self) {
         return self;
     }
- 
+    _horiticalCenter = NO;
     return self;
 }
 
