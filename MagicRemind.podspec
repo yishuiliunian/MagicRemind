@@ -39,5 +39,6 @@ Pod::Spec.new do |s|
   # s.frameworks = 'UIKit', 'MapKit'
   s.dependency 'YYModel'
   s.dependency 'DZBadgeView'
+  s.dependency 'MRLogicInjection'
   s.library = 'c++'
 end
