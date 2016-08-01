@@ -80,7 +80,6 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
             [l storage:self willChangeItem:item showState:NO];
         }
     }
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
 }
 

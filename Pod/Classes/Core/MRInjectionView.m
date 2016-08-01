@@ -18,8 +18,25 @@ static void* kMRXbadgeMargin  = &kMRXbadgeMargin;
 static void* kMRYBadgeMargin = &kMRYBadgeMargin;
 static void* kMRTapGesture = &kMRTapGesture;
 static void* kMRHoritical = &kMRHoritical;
+static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
+
+
+@interface MRInjectionViewTapDelegte : NSObject <UIGestureRecognizerDelegate>
+
+@end
+
+@implementation MRInjectionViewTapDelegte
+
+- (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
+@end
+
 @interface MRInjectionView ()
 @property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
+@property (nonatomic, strong) MRInjectionViewTapDelegte* __tapDelegate;
 @end
 
 @implementation MRInjectionView
@@ -29,7 +46,15 @@ static void* kMRHoritical = &kMRHoritical;
     objc_setAssociatedObject(self, kMRTapGesture, tapGesture, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void) set__tapDelegate:(MRInjectionViewTapDelegte *)__tapDelegate
+{
+    objc_setAssociatedObject(self, kMRInjectionTapDelegate, __tapDelegate, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
+- (MRInjectionViewTapDelegte*) __tapDelegate
+{
+    return objc_getAssociatedObject(self, kMRInjectionTapDelegate);
+}
 - (UITapGestureRecognizer*) tapGesture
 {
     return objc_getAssociatedObject(self, kMRTapGesture);
@@ -125,9 +150,15 @@ static void* kMRHoritical = &kMRHoritical;
 - (void) enableTapClearRemind
 {
     if (!self.tapGesture) {
+        MRInjectionViewTapDelegte* delegate = self.__tapDelegate;
+        if (!delegate) {
+            delegate = [MRInjectionViewTapDelegte new];
+            self.__tapDelegate = delegate;
+        }
         UITapGestureRecognizer* tapGestur = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(__handleMagicRemindTap:)];
         tapGestur.numberOfTapsRequired = 1;
         tapGestur.numberOfTouchesRequired = 1;
+        tapGestur.delegate = delegate;
         [self addGestureRecognizer:tapGestur];
         self.userInteractionEnabled = YES;
         self.tapGesture = tapGestur;
@@ -155,6 +186,11 @@ static void* kMRHoritical = &kMRHoritical;
     } else {
         if (item.layoutItems.count == 1) {
             MRContentView* contentView = [self MR_contentView:[MRSimpleContentView class]];
+            if (!self.tapGesture) {
+                contentView.userInteractionEnabled = NO;
+            } else {
+                contentView.userInteractionEnabled = YES;
+            }
             CGRect rect = self.bounds;
             rect.origin.x = self.xBadgeMargin * self.bounds.size.width;
             rect.origin.y = self.yBadgeMargin * self.bounds.size.height;

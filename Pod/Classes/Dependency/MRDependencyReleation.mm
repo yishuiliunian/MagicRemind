@@ -59,6 +59,9 @@
             MRItem* item = nil;
             for (MRGNode* childNode in allDenp) {
                 MRItem* joinedItem = [storage itemWithIdentifier:childNode.identifier];
+                if (!joinedItem) {
+                    continue;
+                }
                 item = [joinedItem joinWithItem:item];
             }
             item.identifier = node.identifier;

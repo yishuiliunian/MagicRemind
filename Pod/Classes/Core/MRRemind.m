@@ -55,6 +55,7 @@ MRInjectionView*  MRExternNavigationBarItemRemindLogic(UIBarButtonItem* item, NS
         MRExtendViewRemindLogic(tabView, identifier);
     }
     if ([tabView respondsToSelector:@selector(magicRemindBridge)]) {
+        [tabView setNeedsLayout];
         return tabView;
     }
     return nil;
