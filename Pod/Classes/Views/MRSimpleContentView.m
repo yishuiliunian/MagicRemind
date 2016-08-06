@@ -26,8 +26,21 @@
     _badgeView = [[DZBadgeView alloc] init];
     [self addSubview:_badgeView];
     return self;
-
 }
+
+- (void) sizeToFit
+{
+    MRLayoutItem* layoutItem = _item.layoutItems.lastObject;
+    if ([layoutItem isKindOfClass:[MRLayoutTextItem class]]) {
+        MRLayoutTextItem* textItem = (MRLayoutTextItem*)layoutItem;
+        _badgeView.horiticalCenter = self.horiticalCenter;
+        _badgeView.text= textItem.text;
+    }
+    CGRect rect = self.frame;
+    rect.size = _badgeView.contentSize;
+    self.frame = rect;
+}
+
 - (void) layoutMRItem:(MRItem *)item
 {
     _item = item;
@@ -37,14 +50,12 @@
 - (void) layoutSubviews
 {
     [super layoutSubviews];
-    
     MRLayoutItem* layoutItem = _item.layoutItems.lastObject;
     if ([layoutItem isKindOfClass:[MRLayoutTextItem class]]) {
         MRLayoutTextItem* textItem = (MRLayoutTextItem*)layoutItem;
-        _badgeView.frame = self.bounds;
         _badgeView.horiticalCenter = self.horiticalCenter;
         _badgeView.text= textItem.text;
+        _badgeView.frame = self.bounds;
     }
-
 }
 @end

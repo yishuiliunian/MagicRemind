@@ -34,7 +34,7 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
 
 @end
 
-@interface MRInjectionView ()
+@interface MRInjectionView () <MRInjectionViewExtendProtocol>
 @property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
 @property (nonatomic, strong) MRInjectionViewTapDelegte* __tapDelegate;
 @end
@@ -165,6 +165,8 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
     }
 }
 
+
+
 - (void) layoutSubviews
 {
     [super layoutSubviews];
@@ -191,12 +193,20 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
             } else {
                 contentView.userInteractionEnabled = YES;
             }
-            CGRect rect = self.bounds;
-            rect.origin.x = self.xBadgeMargin * self.bounds.size.width;
-            rect.origin.y = self.yBadgeMargin * self.bounds.size.height;
-            contentView.frame = rect;
-            contentView.horiticalCenter = self.horizontalCenter;
             [contentView layoutMRItem:item];
+            [contentView sizeToFit];
+            if ([self respondsToSelector:@selector(layoutMRContentView:)]) {
+                [self layoutMRContentView:contentView];
+            } else {
+                CGRect rect = self.bounds;
+                rect.size = contentView.frame.size;
+                rect.origin.x = self.xBadgeMargin * self.bounds.size.width;
+                rect.origin.y = self.yBadgeMargin * self.bounds.size.height;
+                contentView.frame = rect;
+                contentView.horiticalCenter = self.horizontalCenter;
+            }
+
+
         }
     }
 }

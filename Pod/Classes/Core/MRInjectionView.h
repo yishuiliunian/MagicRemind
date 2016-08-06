@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "MRUIBridge.h"
+
+
+@protocol MRInjectionViewExtendProtocol  <NSObject>
+
+- (void) layoutMRContentView:(UIView*)mrcontentView;
+
+@end
+
 @interface MRInjectionView : UIView
 @property (nonatomic, strong) MRUIBridge* magicRemindBridge;
 @property (nonatomic, assign) CGFloat xBadgeMargin;
