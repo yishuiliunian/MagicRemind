@@ -14,7 +14,7 @@
 
 - (void) dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:MRNotificationKey(_identifier)];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (instancetype) initWithIdentifier:(NSString *)identifier
