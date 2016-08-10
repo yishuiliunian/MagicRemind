@@ -72,7 +72,6 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     dispatch_barrier_async(_modifyQueue, ^{
         if (item.identifier) {
             _magicRemindCache[item.identifier] = item;
-            [self archiveStorage];
         }
     });
 }
@@ -159,7 +158,6 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     if (!data) {
         return;
     }
-
     NSDictionary* cache = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     [_magicRemindCache addEntriesFromDictionary:cache];
 }

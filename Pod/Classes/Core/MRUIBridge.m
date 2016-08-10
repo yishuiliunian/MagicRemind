@@ -11,6 +11,12 @@
 #import "MRItem.h"
 #import "MRNotification.h"
 @implementation MRUIBridge
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:MRNotificationKey(_identifier)];
+}
+
 - (instancetype) initWithIdentifier:(NSString *)identifier
 {
     self = [super init];

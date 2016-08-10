@@ -47,7 +47,7 @@
 }
 - (MRGNode*) nodeWithIdentifier:(NSString*)identifier
 {
-    for (MRGNode* node in _nodes) {
+    for (MRGNode* node in [_nodes copy]) {
         if ([node.identifier isEqualToString:identifier]) {
             return node;
         }
