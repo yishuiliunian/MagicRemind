@@ -18,6 +18,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 {
     NSMutableDictionary* _magicRemindCache;
     NSMutableArray* _allListener;
+    dispatch_queue_t _modifyQueue;
 }
 @end
 
@@ -39,6 +40,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     if (!self) {
         return self;
     }
+    _modifyQueue = dispatch_queue_create("com.magic.remind.modify", NULL);
     _magicRemindCache = [NSMutableDictionary new];
     _allListener = [NSMutableArray new];
     [self registerChangeListender:[MRDependencyReleation shareManager]];
@@ -58,20 +60,26 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (MRItem*) itemWithIdentifier:(NSString *)identifier
 {
-    return _magicRemindCache[identifier];
+    __block MRItem* item;
+    dispatch_sync(_modifyQueue, ^{
+        item = _magicRemindCache[identifier];
+    });
+    return item;
 }
 
 - (void) cacheItem:(MRItem*)item
 {
-    if (item.identifier) {
-        _magicRemindCache[item.identifier] = item;
-        [self archiveStorage];
-    }
+    dispatch_barrier_async(_modifyQueue, ^{
+        if (item.identifier) {
+            _magicRemindCache[item.identifier] = item;
+            [self archiveStorage];
+        }
+    });
 }
 
 - (void) updateItem:(MRItem*)item
 {
-    if (!item) {
+    if (!item && ![item isKindOfClass:[MRItem class]]) {
         return;
     }
     [self cacheItem:item];
