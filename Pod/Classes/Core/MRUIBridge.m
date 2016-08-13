@@ -28,9 +28,13 @@
     return self;
 }
 
+
 - (void) stateChanged:(NSNotification*)nc
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.customAction) {
+            self.customAction();
+        }
         [self.layoutView setNeedsLayout];
     });
 }

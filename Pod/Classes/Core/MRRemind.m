@@ -44,8 +44,10 @@ void MRExtendTabarItemRemindLogic(UITabBarItem* item , NSString* identifier) {
         MRExtendViewRemindLogic(aimView, identifier);
         if ([aimView respondsToSelector:@selector(xBadgeMargin)] && [aimView respondsToSelector:@selector(yBadgeMargin)]) {
             MRInjectionView* injectionView = (MRInjectionView*)aimView;
-            injectionView.xBadgeMargin = 0.5;
+            injectionView.xBadgeMargin = 0.8;
+            injectionView.yBadgeMargin = -0.2;
         }
+        [aimView setNeedsLayout];
     }
 }
 
