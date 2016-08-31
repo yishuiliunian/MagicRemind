@@ -76,6 +76,14 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     });
 }
 
+- (void) removeItem:(MRItem*)item
+{
+    dispatch_barrier_async(_modifyQueue, ^{
+        if (item.identifier) {
+            [_magicRemindCache removeObjectForKey:item.identifier];
+        }
+    });
+}
 - (void) updateItem:(MRItem*)item
 {
     if (!item && ![item isKindOfClass:[MRItem class]]) {
