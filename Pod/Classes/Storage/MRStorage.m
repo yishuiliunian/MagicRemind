@@ -17,6 +17,28 @@
 #import "YHAccountData.h"
 #import "DZLogger.h"
 static NSString* kMagicRemindKey  = @"kMagicRemindKey";
+
+@interface MRArchiveCodec : DZCacheArchiveCodec
+
+@end
+
+@implementation MRArchiveCodec
+
+- (NSData*) encode:(NSDictionary*)object error:(NSError* __autoreleasing*)error;
+{
+    NSMutableDictionary* dic  = [object mutableCopy];
+    NSArray* allKeys = dic.allKeys;
+    for (NSString* key in allKeys) {
+        MRItem* item = dic[key];
+        if (!item.show) {
+            [dic removeObjectForKey:key];
+        }
+    }
+    return [super encode:dic error:error];
+}
+@end
+
+
 @interface MRStorage ()
 {
     NSMutableDictionary* _magicRemindCache;
@@ -35,28 +57,22 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     }];
 }
 
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (instancetype) init
 {
     self = [super init];
     if (!self) {
         return self;
     }
-    _fileCache = [[DZAccountFileCache activeCache] fileCacheWithName:@"magic-remind" codec:[DZCacheArchiveCodec new]];
+    _fileCache = [[DZAccountFileCache activeCache] fileCacheWithName:@"magic-remind" codec:[MRArchiveCodec new]];
     _modifyQueue = dispatch_queue_create("com.magic.remind.modify", NULL);
     _magicRemindCache = [NSMutableDictionary new];
     _allListener = [NSMutableArray new];
     [self registerChangeListender:[MRDependencyReleation shareManager]];
     [self loadStorage];
-    NSNotificationCenter* ncenter = [NSNotificationCenter defaultCenter];
-    [ncenter addObserver:self selector:@selector(archiveStorage) name:
-     UIApplicationDidEnterBackgroundNotification
-                  object:nil];
-    [ncenter addObserver:self selector:@selector(archiveStorage) name:
-     UIApplicationDidReceiveMemoryWarningNotification
-                  object:nil];
-    [ncenter addObserver:self selector:@selector(archiveStorage) name:UIApplicationWillResignActiveNotification object:nil];
-    [ncenter addObserver:self selector:@selector(archiveStorage) name:UIApplicationWillTerminateNotification object:nil];
-    
     return self;
 }
 
@@ -172,15 +188,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (void) archiveStorage
 {
-    NSMutableDictionary* dic  = [_magicRemindCache copy];
-    NSArray* allKeys = dic.allKeys;
-    for (NSString* key in allKeys) {
-        MRItem* item = dic[key];
-        if (!item.show) {
-            [dic removeObjectForKey:key];
-        }
-    }
-    _fileCache.lastCachedObject = dic;
+    _fileCache.lastCachedObject = [_magicRemindCache copy];
     NSError* error;
     [_fileCache flush:&error];
     if (!error) {
