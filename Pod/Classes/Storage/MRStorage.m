@@ -13,12 +13,16 @@
 #import "MRDependencyReleation.h"
 #import "MRNotification.h"
 #import "MRLayoutNumberItem.h"
+#import <DZAccountFileCache/DZAccountFileCache.h>
+#import "YHAccountData.h"
+#import "DZLogger.h"
 static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 @interface MRStorage ()
 {
     NSMutableDictionary* _magicRemindCache;
     NSMutableArray* _allListener;
     dispatch_queue_t _modifyQueue;
+    DZFileCache* _fileCache;
 }
 @end
 
@@ -26,12 +30,9 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 @implementation MRStorage
 + (MRStorage*) shareStorage
 {
-    static MRStorage* storage = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        storage = [MRStorage new];
-    });
-    return storage;
+    return [[YHAccountData shareFactory] shareInstanceFor:[self class] withInitBlock:^(id object) {
+        [object init];
+    }];
 }
 
 - (instancetype) init
@@ -40,6 +41,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     if (!self) {
         return self;
     }
+    _fileCache = [[DZAccountFileCache activeCache] fileCacheWithName:@"magic-remind" codec:[DZCacheArchiveCodec new]];
     _modifyQueue = dispatch_queue_create("com.magic.remind.modify", NULL);
     _magicRemindCache = [NSMutableDictionary new];
     _allListener = [NSMutableArray new];
@@ -162,20 +164,28 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (void) loadStorage
 {
-    NSData* data = [[NSUserDefaults standardUserDefaults] objectForKey:kMagicRemindKey];
-    if (!data) {
-        return;
+    NSDictionary* fileCachedObject = _fileCache.lastCachedObject;
+    if ([fileCachedObject isKindOfClass:[NSDictionary class]]) {
+        [_magicRemindCache addEntriesFromDictionary:fileCachedObject];
     }
-    NSDictionary* cache = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    [_magicRemindCache addEntriesFromDictionary:cache];
 }
 
 - (void) archiveStorage
 {
-    NSDictionary* cache = [_magicRemindCache copy];
-    NSData* allItems = [NSKeyedArchiver archivedDataWithRootObject:cache];
-    [[NSUserDefaults standardUserDefaults] setObject:allItems forKey:kMagicRemindKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSMutableDictionary* dic  = [_magicRemindCache copy];
+    NSArray* allKeys = dic.allKeys;
+    for (NSString* key in allKeys) {
+        MRItem* item = dic[key];
+        if (!item.show) {
+            [dic removeObjectForKey:key];
+        }
+    }
+    _fileCache.lastCachedObject = dic;
+    NSError* error;
+    [_fileCache flush:&error];
+    if (!error) {
+        DDLogError(@"%@",error);
+    }
 }
 
 - (void) registerChangeListender:(id<MRStatesProtocol>)listener
