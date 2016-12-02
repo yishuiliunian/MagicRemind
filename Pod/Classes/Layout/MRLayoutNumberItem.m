@@ -17,7 +17,7 @@ NSString* const kMRLayoutNumberNumber = @"number";
 - (void) setValue:(id)value forKey:(NSString *)key
 {
     if ([key isEqualToString:kMRLayoutNumberNumber]) {
-        _number = [value integerValue];
+        [self setNumber:[value integerValue]];
     } else {
         [super setValue:value forKey:key];
     }
@@ -45,6 +45,14 @@ NSString* const kMRLayoutNumberNumber = @"number";
 - (int)number
 {
     return _number;
+}
+
+- (NSDictionary*) toDictionary
+{
+    NSMutableDictionary* infos = [[super toDictionary] mutableCopy];
+    NSDictionary* myInfos = [self dictionaryWithValuesForKeys:@[kMRLayoutNumberNumber]];
+    [infos addEntriesFromDictionary:myInfos];
+    return infos;
 }
 @end
 

@@ -19,6 +19,7 @@ static void* kMRYBadgeMargin = &kMRYBadgeMargin;
 static void* kMRTapGesture = &kMRTapGesture;
 static void* kMRHoritical = &kMRHoritical;
 static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
+static  void * kMRCurrentContentView = &kMRCurrentContentView;
 
 
 @interface MRInjectionViewTapDelegte : NSObject <UIGestureRecognizerDelegate>
@@ -37,10 +38,18 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
 @interface MRInjectionView () <MRInjectionViewExtendProtocol>
 @property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
 @property (nonatomic, strong) MRInjectionViewTapDelegte* __tapDelegate;
+@property  (nonatomic, strong) MRContentView * MR_currentContentView;
 @end
 
 @implementation MRInjectionView
 
+- (void)setMR_currentContentView:(MRContentView *)MR_currentContentView {
+    objc_setAssociatedObject(self,kMRCurrentContentView, MR_currentContentView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (MRContentView *)MR_currentContentView {
+    return objc_getAssociatedObject(self, kMRCurrentContentView);
+}
 - (void) setTapGesture:(UITapGestureRecognizer *)tapGesture
 {
     objc_setAssociatedObject(self, kMRTapGesture, tapGesture, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -165,8 +174,6 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
     }
 }
 
-
-
 - (void) layoutSubviews
 {
     [super layoutSubviews];
@@ -185,9 +192,11 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
                 [view removeFromSuperview];
             }
         }
+        self.MR_currentContentView = nil;
     } else {
         if (item.layoutItems.count == 1) {
             MRContentView* contentView = [self MR_contentView:[MRSimpleContentView class]];
+            self.MR_currentContentView = contentView;
             if (!self.tapGesture) {
                 contentView.userInteractionEnabled = NO;
             } else {
@@ -205,8 +214,8 @@ static void* kMRInjectionTapDelegate = &kMRInjectionTapDelegate;
                 contentView.frame = rect;
                 contentView.horiticalCenter = self.horizontalCenter;
             }
-
-
+        } else {
+            self.MR_currentContentView = nil;
         }
     }
 }

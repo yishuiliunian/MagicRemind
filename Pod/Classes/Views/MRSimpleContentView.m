@@ -44,18 +44,17 @@
 - (void) layoutMRItem:(MRItem *)item
 {
     _item = item;
-    [self setNeedsLayout];
-}
-
-- (void) layoutSubviews
-{
-    [super layoutSubviews];
     MRLayoutItem* layoutItem = _item.layoutItems.lastObject;
     if ([layoutItem isKindOfClass:[MRLayoutTextItem class]]) {
         MRLayoutTextItem* textItem = (MRLayoutTextItem*)layoutItem;
         _badgeView.horiticalCenter = self.horiticalCenter;
         _badgeView.text= textItem.text;
-        _badgeView.frame = self.bounds;
     }
+}
+
+- (void) layoutSubviews
+{
+    [super layoutSubviews];
+    _badgeView.frame = self.bounds;
 }
 @end

@@ -43,8 +43,9 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 {
     NSMutableDictionary* _magicRemindCache;
     NSMutableArray* _allListener;
-    dispatch_queue_t _modifyQueue;
     DZFileCache* _fileCache;
+    //
+    NSRecursiveLock * _safeLock;
 }
 @end
 
@@ -68,7 +69,6 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
         return self;
     }
     _fileCache = [[DZAccountFileCache activeCache] fileCacheWithName:@"magic-remind" codec:[MRArchiveCodec new]];
-    _modifyQueue = dispatch_queue_create("com.magic.remind.modify", NULL);
     _magicRemindCache = [NSMutableDictionary new];
     _allListener = [NSMutableArray new];
     [self registerChangeListender:[MRDependencyReleation shareManager]];
@@ -79,28 +79,30 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 - (MRItem*) itemWithIdentifier:(NSString *)identifier
 {
     __block MRItem* item;
-    dispatch_sync(_modifyQueue, ^{
-        item = _magicRemindCache[identifier];
-    });
+    [_safeLock tryLock];
+    item = _magicRemindCache[identifier];
+    [_safeLock unlock];;
     return item;
 }
 
 - (void) cacheItem:(MRItem*)item
 {
-    dispatch_barrier_async(_modifyQueue, ^{
-        if (item.identifier) {
+    [_safeLock tryLock];
+    if (item.identifier) {
             _magicRemindCache[item.identifier] = item;
-        }
-    });
+    }
+    [_safeLock unlock];
+    [self archiveStorage];
 }
 
 - (void) removeItem:(MRItem*)item
 {
-    dispatch_barrier_async(_modifyQueue, ^{
-        if (item.identifier) {
-            [_magicRemindCache removeObjectForKey:item.identifier];
-        }
-    });
+    [_safeLock tryLock];
+    if (item.identifier) {
+        [_magicRemindCache removeObjectForKey:item.identifier];
+    }
+    [_safeLock unlock];
+    [self archiveStorage];
 }
 - (void) updateItem:(MRItem*)item
 {
@@ -108,11 +110,13 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
         return;
     }
     [self cacheItem:item];
+    [_safeLock tryLock];
     for (id<MRStatesProtocol> l in _allListener) {
         if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
             [l storage:self willChangeItem:item showState:NO];
         }
     }
+    [_safeLock unlock];
     [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
 }
 
@@ -169,11 +173,14 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 {
     MRItem* item  = [self itemWithIdentifier:identifier];
     item.show = NO;
+    [self archiveStorage];
+    [_safeLock tryLock];
     for (id<MRStatesProtocol> l in _allListener) {
         if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
             [l storage:self willChangeItem:item showState:NO];
         }
     }
+    [_safeLock unlock];
     //
     [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationKey(item.identifier) object:nil];
 }
@@ -188,16 +195,15 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (void) archiveStorage
 {
+    [_safeLock tryLock];
     _fileCache.lastCachedObject = [_magicRemindCache copy];
-    NSError* error;
-    [_fileCache flush:&error];
-    if (!error) {
-        DDLogError(@"%@",error);
-    }
+    [_safeLock unlock];
 }
 
 - (void) registerChangeListender:(id<MRStatesProtocol>)listener
 {
+    [_safeLock tryLock];
     [_allListener addObject:listener];
+    [_safeLock unlock];
 }
 @end
