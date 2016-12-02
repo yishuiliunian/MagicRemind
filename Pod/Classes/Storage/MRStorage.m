@@ -79,7 +79,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 - (MRItem*) itemWithIdentifier:(NSString *)identifier
 {
     __block MRItem* item;
-    [_safeLock tryLock];
+    [_safeLock lock];
     item = _magicRemindCache[identifier];
     [_safeLock unlock];;
     return item;
@@ -87,7 +87,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (void) cacheItem:(MRItem*)item
 {
-    [_safeLock tryLock];
+    [_safeLock lock];
     if (item.identifier) {
             _magicRemindCache[item.identifier] = item;
     }
@@ -97,7 +97,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (void) removeItem:(MRItem*)item
 {
-    [_safeLock tryLock];
+    [_safeLock lock];
     if (item.identifier) {
         [_magicRemindCache removeObjectForKey:item.identifier];
     }
@@ -110,7 +110,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
         return;
     }
     [self cacheItem:item];
-    [_safeLock tryLock];
+    [_safeLock lock];
     for (id<MRStatesProtocol> l in _allListener) {
         if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
             [l storage:self willChangeItem:item showState:NO];
@@ -174,7 +174,7 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
     MRItem* item  = [self itemWithIdentifier:identifier];
     item.show = NO;
     [self archiveStorage];
-    [_safeLock tryLock];
+    [_safeLock lock];
     for (id<MRStatesProtocol> l in _allListener) {
         if ([l respondsToSelector:@selector(storage:willChangeItem:showState:)]) {
             [l storage:self willChangeItem:item showState:NO];
@@ -195,14 +195,14 @@ static NSString* kMagicRemindKey  = @"kMagicRemindKey";
 
 - (void) archiveStorage
 {
-    [_safeLock tryLock];
+    [_safeLock lock];
     _fileCache.lastCachedObject = [_magicRemindCache copy];
     [_safeLock unlock];
 }
 
 - (void) registerChangeListender:(id<MRStatesProtocol>)listener
 {
-    [_safeLock tryLock];
+    [_safeLock lock];
     [_allListener addObject:listener];
     [_safeLock unlock];
 }
